@@ -3,9 +3,10 @@ from django.utils._os import safe_join
 from django.views.static import serve as static_serve
 from django.contrib.auth.models import User
 from pathlib import Path
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, generics, views, response
+
 from .models import Board, Post, Thread
-from .serializers import BoardSerializer, PostSerializer, UserSerializer
+from .serializers import BoardSerializer, PostSerializer, UserSerializer, ThreadInfoSerializer, PostsInThreadSerializer
 
 
 def serve(request, path, document_root=None):
@@ -22,18 +23,32 @@ class BoardApi(viewsets.ReadOnlyModelViewSet):
     serializer_class = BoardSerializer
 
 
-class PostApi(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('post_last_modified')
-    serializer_class = PostSerializer
-    # permission_classes = [permissions.IsAuthenticated]
-
-
-class ThreadApi(viewsets.ModelViewSet):
-    queryset = Thread.objects.all().order_by('bump_timestamp')
-    serializer_class = PostSerializer
-
-
 class UserApi(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     # permission_classes = [permissions.IsAuthenticated]
+
+
+class PostsInThread(generics.RetrieveAPIView):
+    serializer_class = PostsInThreadSerializer
+    queryset = Thread.objects.all()
+
+
+# class ThreadsInBoard(views.APIView):
+#     pass
+
+
+# class CreateNewThread(generics.CreateAPIView):
+#     serializer_class = PostSerializer
+#
+#     def perform_create(self, serializer):
+#         thread = self.kwargs['thread']
+#         serializer.save(thread=thread)
+
+
+# class CreateNewReply(generics.CreateAPIView):
+#     serializer_class = PostSerializer
+#
+#     def perform_create(self, serializer):
+#         thread = self.kwargs['thread']
+#         serializer.save(thread=thread)

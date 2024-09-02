@@ -7,7 +7,8 @@ import {
 import './index.css'
 import Root from './routes/root.tsx';
 import ErrorPage from './error-page.tsx';
-
+import BoardBrowse from './routes/board_browse.tsx';
+import Thread from './routes/thread.tsx'
 
 export type Post = {
     'board': string,
@@ -24,6 +25,19 @@ export type Board = {
     'board_index': string
 }
 
+export type Thread = {
+    'id': number,
+    'thread_title': string,
+    'board': string,
+    'archived': boolean,
+    'sticky': boolean,
+    'date_created': number,
+    'first_post_body': string,
+    'op': number,
+    'replies': number
+}
+
+export const BASE_URL = '127.0.0.1:5000'
 
 const ROUTER = createBrowserRouter([
     {
@@ -32,10 +46,12 @@ const ROUTER = createBrowserRouter([
         errorElement: <ErrorPage />
     },
     {
-        path: 'boards/:boardId'
+        path: 'boards/:boardIdx',
+        element: <BoardBrowse />
     },
     {
-        path: 'boards/:boardId/:threadId'
+        path: 'boards/:boardId/:threadId',
+        element: <Thread />
     }
 ])
 

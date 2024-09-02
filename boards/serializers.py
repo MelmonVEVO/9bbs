@@ -9,39 +9,53 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['username', 'url']
 
 
-class BoardSerializer(serializers.HyperlinkedModelSerializer):
+class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = ['board_name', 'board_index']
+        fields = ['board_index', 'board_name']
 
 
-class ThreadSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Thread
-        field = [
-            'id',
-            'thread_title',
-            'bump_timestamp',
-            'board',
-            'archived',
-            'sticky'
-        ]
-
-
-class PostSerializer(serializers.HyperlinkedModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
+            'post_no',
             'poster',
             'thread',
-            'post_no',
             'reply_to',
             'post_title',
             'post_body',
             'post_date',
             'post_last_modified'
         ]
+        read_only_fields = ['post_date']
 
 
-class NewPostDeserializer(serializers.ModelSerializer):
-    pass
+class ThreadInfoSerializer(serializers.ModelSerializer):
+    first_post = PostSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Thread
+        fields = [
+            'id',
+            'thread_title',
+            'board',
+            'archived',
+            'sticky',
+            'first_post'
+        ]
+
+
+class PostsInThreadSerializer(serializers.ModelSerializer):
+    posts = PostSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Thread
+        fields = [
+            'id',
+            'thread_title',
+            'board',
+            'archived',
+            'sticky',
+            'posts'
+        ]

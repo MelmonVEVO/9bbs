@@ -11,6 +11,7 @@ type FormData = {
 
 type Props = {
     threadID?: number
+    boardID?: string
     replyTo?: number
 }
 
@@ -24,7 +25,7 @@ const NewPost: FC<Props> = (props: Props) => {
         options: ''
     });
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target
         setFormData((previousFormData) => ({ ...previousFormData, [name]: value }))
     }
@@ -60,7 +61,7 @@ const NewPost: FC<Props> = (props: Props) => {
                 )}
 
                 <label htmlFor='post_contents'>Text:</label>
-                <textarea name='post_contents' value={formData.post_contents} onChange={handleChange}/>
+                <textarea name='post_contents' value={formData.post_contents} onChange={handleChange} />
 
                 <label htmlFor='options'>Options:</label>
                 <input name='options' id='options' value={formData.options} onChange={handleChange} />

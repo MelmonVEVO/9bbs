@@ -18,21 +18,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from boards.views import BoardApi, PostApi, UserApi, ThreadApi
+from boards.views import BoardApi, PostsInThread, UserApi
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'boards/?', BoardApi)
-router.register(r'posts/?', PostApi)
-router.register(r'threads/?', ThreadApi)
 router.register(r'users/?', UserApi)
-
 
 urlpatterns = [
     path('', include('frontend_serve.urls')),
     path('api/', include(router.urls)),
+    path('api/thread/<int:pk>', PostsInThread.as_view(), name='posts-in-thread'),
+    # path('api/board/<str:board>', ThreadsInBoard.as_view(), name='threads-in-board'),
     path('admin/', admin.site.urls),
     path('api_auth/', include('rest_framework.urls', namespace='rest_framework'))
-    #re_path('', views.serve, {'document_root': settings.REACT_APP_BUILD_PATH}, name="9bbs")
 ]
 
 urlpatterns += router.urls
